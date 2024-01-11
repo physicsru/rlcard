@@ -31,29 +31,26 @@ class KuhnPokerEnv(Env):
         return [self.actions.index(action) for action in legal_actions]
 
     # _get_legal_actions, _extract_state, get_payoffs, _decode_action, get_perfect_information methods
-    def _extract_state(self, state):
-        extracted_state = {}
-
-        # Encode legal actions
-        legal_actions = OrderedDict({self.actions.index(a): None for a in state['legal_actions']})
-        extracted_state['legal_actions'] = legal_actions
-
-        # Encode own hand
+    def _extract_state(self, state, position):
+        # Initial state based on the card
         hand = state['hand']
-        obs = [self.card2index[hand]]
+        obs = self.card2index[hand]
 
-        # Encode action history
-        # Assuming each action is encoded as an integer
-        action_history = self.action_recorder.record  # A list of actions
-        obs.extend(action_history)
+        # Adjust state based on actions for position 0
+        if position == 0:
+            if 'bet' in self.action_recorder.record:
+                obs += 3  # Adjusting the state for pass_bet
 
-        extracted_state['obs'] = obs
+        # Adjust state based on actions for position 1
+        elif position == 1:
+            action_history = self.action_recorder.record
+            if 'bet' in action_history:
+                obs += (0 if action_history[-1] == 'bet' else 1)  # J_bet or J_pass
+            else:
+                obs += 2  # Adjusting for Q or K with pass or bet
 
-        # Raw observation and legal actions for additional information
-        extracted_state['raw_obs'] = state
-        extracted_state['raw_legal_actions'] = [a for a in state['legal_actions']]
+        return obs
 
-        return extracted_state
 
     
     def get_payoffs(self):
