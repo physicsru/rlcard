@@ -1,5 +1,4 @@
-class LeducholdemPlayer:
-
+class KuhnPlayer:
     def __init__(self, player_id, np_random):
         ''' Initilize a player.
 
@@ -12,9 +11,9 @@ class LeducholdemPlayer:
         self.hand = None
 
         # The chips that this player has put in until now
-        self.in_chips = 0
+        self.in_chips = 1
 
-    def get_state(self, public_card, all_chips, legal_actions):
+    def get_state(self, all_chips, legal_actions):
         ''' Encode the state for the player
 
         Args:
@@ -26,7 +25,6 @@ class LeducholdemPlayer:
         '''
         state = {}
         state['hand'] = self.hand.get_index()
-        state['public_card'] = public_card.get_index() if public_card else None
         state['all_chips'] = all_chips
         state['my_chips'] = self.in_chips
         state['legal_actions'] = legal_actions

@@ -1,6 +1,6 @@
-from rlcard.games.leducholdem.dealer import LeducholdemDealer as Dealer
-from rlcard.games.leducholdem.judger import LeducholdemJudger as Judger
-from rlcard.games.leducholdem.player import LeducholdemPlayer as Player
-from rlcard.games.leducholdem.round import LeducholdemRound as Round
-from rlcard.games.leducholdem.game import LeducholdemGame as Game
+from rlcard.games.kuhn.dealer import KuhnDealer as Dealer
+from rlcard.games.kuhn.judger import KuhnJudger as Judger
+from rlcard.games.kuhn.player import KuhnPlayer as Player
+from rlcard.games.kuhn.round import KuhnRound as Round
+from rlcard.games.kuhn.game import KuhnGame as Game
 
