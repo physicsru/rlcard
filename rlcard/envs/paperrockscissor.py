@@ -40,11 +40,8 @@ class PaperrockscissorEnv(Env):
         extracted_state['legal_actions'] = {self.actions.index(a): None for a in self.actions}
         
         # Update this to include history or other relevant information
-        obs = np.zeros(6)
-        if state['last_action']:
-            player_action, opponent_action = state['last_action']
-            obs[self.actions.index(player_action)] = 1
-            obs[3 + self.actions.index(opponent_action)] = 1
+        obs = np.zeros(1)
+        #print(state)
             
         extracted_state['obs'] = obs
 
@@ -68,9 +65,8 @@ class PaperrockscissorEnv(Env):
         ''' Get the perfect information of the current state
         '''
         # Assuming 'game' has a method to return the last actions
-        last_actions = self.game.get_last_actions()
-
-        return {
-            'last_actions': last_actions,
-            # Include other relevant game state information if needed
-        }
+        state = {}
+        state['legal_actions'] = self.game.get_legal_actions()
+        state['current_player'] = self.game.game_pointer
+        return state
+    

@@ -27,19 +27,17 @@ class PaperrockscissorGame:
         self.judger = Judger(self.np_random)
         
         # Randomly choose the starting player
-        self.game_pointer = self.np_random.randint(0, self.num_players)
+        self.game_pointer = 0 #self.np_random.randint(0, self.num_players)
 
         state = self.get_state(self.game_pointer)
         return state, self.game_pointer
 
     def step(self, action):
-        if self.allow_step_back:
-            # Snapshot the current state
-            gp = self.game_pointer
-            ps = [copy(player) for player in self.players]
-            self.history.append((gp, ps))
-
+        if (self.is_over()):
+            raise ValueError('The game is already over!')
         # Apply the action and change the pointer to the next player
+        if action not in self.get_legal_actions():
+            raise ValueError('Illegal action!')
         self.players[self.game_pointer].action = action
         self.game_pointer = (self.game_pointer + 1) % self.num_players
 
@@ -81,3 +79,16 @@ class PaperrockscissorGame:
         # All actions are legal at any point in the game
         return ['rock', 'paper', 'scissors']
 
+    def get_num_actions(self):
+        return len(self.get_legal_actions())
+    
+    def get_player_id(self):
+        """
+        Return the current player's id
+
+        Returns:
+            (int): current player's id
+        """
+        return self.game_pointer
+    def get_num_players(self):
+        return 2

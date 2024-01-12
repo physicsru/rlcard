@@ -20,6 +20,7 @@ class PaperrockscissorJudger:
 
         action1 = players[0].action
         action2 = players[1].action
+        print(action1, action2)
 
         if action1 == action2:
             # It's a tie

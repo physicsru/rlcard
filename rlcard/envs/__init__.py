@@ -52,3 +52,8 @@ register(
     env_id='kuhn',
     entry_point='rlcard.envs.kuhn:KuhnEnv',
 )
+
+register(
+    env_id='paperrockscissor',
+    entry_point='rlcard.envs.paperrockscissor:PaperrockscissorEnv',
+)
