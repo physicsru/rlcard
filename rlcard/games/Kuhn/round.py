@@ -8,6 +8,7 @@ class KuhnRound:
         self.game_pointer = None
         self.num_players = num_players
         self.action_history = []
+        self.raised = 0
 
     def start_new_round(self, game_pointer):
         self.game_pointer = game_pointer

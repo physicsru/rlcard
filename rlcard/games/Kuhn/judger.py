@@ -16,19 +16,34 @@ class KuhnJudger:
         total = 0
         for p in players:
             total += p.in_chips
+        
+        for idx, player in enumerate(players):
+            #ranks.append(rank2int(player.hand.rank))
+            if player.status == 'folded':
+                # The player who did not fold wins the pot
+                fold_player_id = idx
+                winner_id = 1 - fold_player_id
+                #print("here ", winner_id, fold_player_id)
+                # The loser loses the amount they put in the pot
+                loser_chips = players[fold_player_id].in_chips
+                winner_chips = total - loser_chips  # Winner's profit
+                final_chips = min(abs(winner_chips), abs(loser_chips))
 
-        if history[-1][1] == 'fold':
-            # The player who did not fold wins the pot
-            fold_player_id = history[-1][0]
-            winner_id = 1 - fold_player_id
-            #print("here ", winner_id, fold_player_id)
-            # The loser loses the amount they put in the pot
-            loser_chips = players[fold_player_id].in_chips
-            winner_chips = total - loser_chips  # Winner's profit
-            final_chips = min(abs(winner_chips), abs(loser_chips))
+                payoffs = [final_chips if player.player_id == winner_id else -final_chips for player in players]
+                return payoffs
+            
+        # if history[-1][1] == 'fold':
+        #     # The player who did not fold wins the pot
+        #     fold_player_id = history[-1][0]
+        #     winner_id = 1 - fold_player_id
+        #     #print("here ", winner_id, fold_player_id)
+        #     # The loser loses the amount they put in the pot
+        #     loser_chips = players[fold_player_id].in_chips
+        #     winner_chips = total - loser_chips  # Winner's profit
+        #     final_chips = min(abs(winner_chips), abs(loser_chips))
 
-            payoffs = [final_chips if player.player_id == winner_id else -final_chips for player in players]
-            return payoffs
+        #     payoffs = [final_chips if player.player_id == winner_id else -final_chips for player in players]
+        #     return payoffs
 
         # Showdown: compare hands if no player folded
         player0_hand = players[0].hand

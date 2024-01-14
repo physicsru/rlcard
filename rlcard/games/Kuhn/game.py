@@ -35,7 +35,20 @@ class KuhnGame(Game):
         return self.get_state(self.game_pointer), self.game_pointer
 
     def step(self, action):
-        self.history.append((self.round.game_pointer, action))
+        if self.allow_step_back:
+            # First snapshot the current state
+            r = copy(self.round)
+            r_raised = copy(self.round.raised)
+            gp = self.game_pointer
+            r_c = self.round_counter
+            d_deck = copy(self.dealer.deck)
+            #p = copy(self.public_card)
+            action_history = copy(self.round.action_history)
+            ps = [copy(self.players[i]) for i in range(self.num_players)]
+            ps_hand = [copy(self.players[i].hand) for i in range(self.num_players)]
+            self.history.append((r, r_raised, gp, r_c, d_deck, ps, ps_hand, action_history))
+            
+        #self.history.append((self.round.game_pointer, action))
         self.game_pointer = self.round.proceed_round(self.players, action)
         #next_player = self.round.game_pointer
         if self.round.is_over():
@@ -66,7 +79,23 @@ class KuhnGame(Game):
         legal_actions = self.get_legal_actions()
         state = self.players[player].get_state(chips, legal_actions)
         state['current_player'] = self.game_pointer
-        state['history'] = self.history
+        #state['history'] = self.history
         state['hand_card'] = self.players[player].hand
         state['legal_actions'] = legal_actions
         return state
+    
+    def step_back(self):
+        ''' Return to the previous state of the game
+
+        Returns:
+            (bool): True if the game steps back successfully
+        '''
+        if len(self.history) > 0:
+            self.round, r_raised, self.game_pointer, self.round_counter, d_deck, self.players, ps_hand, action_history = self.history.pop()
+            self.round.raised = r_raised
+            self.round.action_history = action_history
+            self.dealer.deck = d_deck
+            for i, hand in enumerate(ps_hand):
+                self.players[i].hand = hand
+            return True
+        return False

@@ -54,12 +54,12 @@ class TestKuhnMethods(unittest.TestCase):
     def test_judge_game(self):
         np_random = np.random.RandomState()
         self.game.init_game()
-        players = [Player(0, np_random), Player(1, np_random)]
-        players[0].hand = Card('S', 'J')
-        players[1].hand = Card('S', 'Q')
+        #players = [Player(0, np_random), Player(1, np_random)]
+        self.game.players[0].hand = Card('S', 'J')
+        self.game.players[1].hand = Card('S', 'Q')
         self.game.step('bet')
         self.game.step('fold') 
-        payoffs = self.game.judger.judge_game(players, self.game.history)
+        payoffs = self.game.judger.judge_game(self.game.players, self.game.history)
         #print("payoffs = ", payoffs)
         self.assertEqual(payoffs[0], 1)
         self.assertEqual(payoffs[1], -1)
@@ -156,7 +156,22 @@ class TestKuhnMethods(unittest.TestCase):
         self.assertEqual(payoffs[0], -1)
         self.assertEqual(payoffs[1], 1)
 
-       
+    def test_step_back(self):
+        game = KuhnGame(allow_step_back=True)
+        state, player_id = game.init_game()
+        action = state['legal_actions'][1]
+        #print(state['legal_actions'])
+        #print(game.round.action_history)
+        game.step(action)
+        #print(game.history)
+        #print(game.get_legal_actions())
+        #print(game.round.action_history)
+        game.step_back()
+        #print(game.round.action_history)
+        #print(output)
+        #print(game.get_legal_actions())
+        self.assertEqual(game.game_pointer, player_id)
+        self.assertEqual(game.step_back(), False)
 
     def test_is_over(self):
         self.game.init_game()
